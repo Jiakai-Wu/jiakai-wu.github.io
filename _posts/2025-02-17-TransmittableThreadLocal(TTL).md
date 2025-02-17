@@ -16,7 +16,7 @@ tags:
   
 `JDK`的[`InheritableThreadLocal`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/InheritableThreadLocal.html)类可以完成父线程到子线程的值传递。但对于使用线程池等会池化复用线程的执行组件的情况，线程由线程池创建好，并且线程是池化起来反复使用的；这时父子线程关系的`ThreadLocal`值传递已经没有意义，应用需要的实际上是把 **任务提交给线程池时**的`ThreadLocal`值传递到 **任务执行时**。  
   
-本库提供的[`TransmittableThreadLocal`](ttl-core/src/main/java/com/alibaba/ttl3/TransmittableThreadLocal.java)类继承并加强`InheritableThreadLocal`类，解决上述的问题。  
+本库提供的`TransmittableThreadLocal`类继承并加强`InheritableThreadLocal`类，解决上述的问题。  
   
 整个`TransmittableThreadLocal`库的核心功能（用户`API`、线程池`ExecutorService`/`ForkJoinPool`/`TimerTask`及其线程工厂的`Wrapper`；开发者`API`、框架/中间件的集成`API`），只有 **_~1000 `SLOC`代码行_**，非常精小。  
   
@@ -30,7 +30,7 @@ tags:
 4. 应用容器或上层框架跨应用代码给下层`SDK`传递信息  
 
 #### 设计理念
-使用类[`TransmittableThreadLocal`](ttl-core/src/main/java/com/alibaba/ttl3/TransmittableThreadLocal.java)来保存值，并跨线程池传递。  
+使用类`TransmittableThreadLocal`来保存值，并跨线程池传递。  
   
 `TransmittableThreadLocal`继承`InheritableThreadLocal`，使用方式也类似。相比`InheritableThreadLocal`，添加了`protected`的`transmitteeValue()`方法，用于定制 **任务提交给线程池时** 的`ThreadLocal`值传递到 **任务执行时** 的传递方式，缺省是简单的赋值传递。  
   
@@ -61,7 +61,7 @@ String value = context.get();
 
 #### 2. 保证线程池中传递值  
 ##### 2.1 修饰`Runnable`和`Callable`  
-使用[`TtlRunnable`](ttl-core/src/main/java/com/alibaba/ttl3/TtlRunnable.java)和[`TtlCallable`](ttl-core/src/main/java/com/alibaba/ttl3/TtlCallable.java)来修饰传入线程池的`Runnable`和`Callable`。  
+使用`TtlRunnable`和`TtlCallable`来修饰传入线程池的`Runnable`和`Callable`。  
 ```java  
 TransmittableThreadLocal<String> context = new TransmittableThreadLocal<>();  
   
@@ -121,7 +121,7 @@ String value = context.get();
   
 #### 2.2 修饰线程池  
 省去每次`Runnable`和`Callable`传入线程池时的修饰，这个逻辑可以在线程池中完成。  
-通过工具类[`TtlExecutors`](ttl-core/src/main/java/com/alibaba/ttl3/executor/TtlExecutors.java)完成，有下面的方法：  
+通过工具类`TtlExecutors`完成，有下面的方法：  
 - `getTtlExecutor`：修饰接口`Executor`  
 - `getTtlExecutorService`：修饰接口`ExecutorService`  
 - `getTtlScheduledExecutorService`：修饰接口`ScheduledExecutorService`  
@@ -152,7 +152,7 @@ String value = context.get();
 #### 2.3 使用`Java Agent`来修饰`JDK`线程池实现类  
   
 这种方式，实现线程池的传递是透明的，业务代码中没有修饰`Runnable`或是线程池的代码。即可以做到应用代码 **无侵入**。  
-\# 关于 **无侵入** 的更多说明参见文档[`Java Agent`方式对应用代码无侵入](docs/developer-guide.md#java-agent%E6%96%B9%E5%BC%8F%E5%AF%B9%E5%BA%94%E7%94%A8%E4%BB%A3%E7%A0%81%E6%97%A0%E4%BE%B5%E5%85%A5)。  
+\# 关于 **无侵入** 的更多说明参见文档`Java Agent`方式对应用代码无侵入。  
   
 示例代码：  
 ```java  
