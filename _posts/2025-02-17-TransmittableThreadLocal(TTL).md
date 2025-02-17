@@ -1,12 +1,8 @@
 ---
 title: TransmittableThreadLocal(TTL)
 date: 2025-02-17 19:14:15 +0800
-categories:
-  - java
-  - thread
-tags:
-  - java
-  - ttl
+categories: [java, thread]
+tags: [java, ttl]
 ---
 ### TransmittableThreadLocal(TTL)概要
 
