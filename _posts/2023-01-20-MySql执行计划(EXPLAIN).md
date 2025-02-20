@@ -5,25 +5,27 @@ categories: [storage, MySQL]
 tags: [history, MySQL, middleware, storage] 
 ---
 ### mysql执行计划（EXPLAIN）
+
 在企业的应用场景中，为了知道优化SQL语句的执行，需要查看SQL语句的具体执行过程，以加快SQL语句的执行效率。
 可以使用`explain + SQL`语句来模拟优化器执行SQL查询语句，从而知道mysql是如何处理sql语句的。
 官网地址： [地址](https://dev.mysql.com/doc/refman/5.5/en/explain-output.html)
+
 #### 执行计划中包含的信息
 
-| **Column** | **Meaning** |
-| --- | --- |
-| id | The `SELECT` identifier |
-| select_type | The `SELECT` type |
-| table | The table for the output row |
-| partitions | The matching partitions |
-| type | The join type |
-| possible_keys | The possible indexes to choose |
-| key | The index actually chosen |
-| key_len | The length of the chosen key |
-| ref | The columns compared to the index |
-| rows | Estimate of rows to be examined |
-| filtered | Percentage of rows filtered by table condition |
-| extra | Additional information |
+| **Column**    | **Meaning**                                    |
+| ------------- | ---------------------------------------------- |
+| id            | The `SELECT` identifier                        |
+| select_type   | The `SELECT` type                              |
+| table         | The table for the output row                   |
+| partitions    | The matching partitions                        |
+| type          | The join type                                  |
+| possible_keys | The possible indexes to choose                 |
+| key           | The index actually chosen                      |
+| key_len       | The length of the chosen key                   |
+| ref           | The columns compared to the index              |
+| rows          | Estimate of rows to be examined                |
+| filtered      | Percentage of rows filtered by table condition |
+| extra         | Additional information                         |
 
 **id**
 > select查询的序列号，包含一组数字，表示查询中执行select子句或者操作表的顺序  
@@ -36,18 +38,18 @@ id号分为三种情况：
 **select_type**
 > 主要用来分辨查询的类型，是普通查询还是联合查询还是子查询
 
-| `select_type` ** Value** | **Meaning** |
-| --- | --- |
-| SIMPLE | Simple SELECT (not using UNION or subqueries) |
-| PRIMARY | Outermost SELECT |
-| UNION | Second or later SELECT statement in a UNION |
-| DEPENDENT UNION | Second or later SELECT statement in a UNION, dependent on outer query |
-| UNION RESULT | Result of a UNION. |
-| SUBQUERY | First SELECT in subquery |
-| DEPENDENT SUBQUERY | First SELECT in subquery, dependent on outer query |
-| DERIVED | Derived table |
-| UNCACHEABLE SUBQUERY | A subquery for which the result cannot be cached and must be re-evaluated for each row of the outer query |
-| UNCACHEABLE UNION | The second or later select in a UNION that belongs to an uncacheable subquery (see UNCACHEABLE SUBQUERY) |
+| `select_type` ** Value** | **Meaning**                                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- |
+| SIMPLE                   | Simple SELECT (not using UNION or subqueries)                                                             |
+| PRIMARY                  | Outermost SELECT                                                                                          |
+| UNION                    | Second or later SELECT statement in a UNION                                                               |
+| DEPENDENT UNION          | Second or later SELECT statement in a UNION, dependent on outer query                                     |
+| UNION RESULT             | Result of a UNION.                                                                                        |
+| SUBQUERY                 | First SELECT in subquery                                                                                  |
+| DEPENDENT SUBQUERY       | First SELECT in subquery, dependent on outer query                                                        |
+| DERIVED                  | Derived table                                                                                             |
+| UNCACHEABLE SUBQUERY     | A subquery for which the result cannot be cached and must be re-evaluated for each row of the outer query |
+| UNCACHEABLE UNION        | The second or later select in a UNION that belongs to an uncacheable subquery (see UNCACHEABLE SUBQUERY)  |
 
 --sample:简单的查询，不包含子查询和union--primary:查询中若包含任何复杂的子查询，最外层查询则被标记为Primary--union:若第二个select出现在union之后，则被标记为union--dependent union:跟union类似，此处的depentent表示union或union all联合而成的结果会受外部表影响  
 --union result:从union表获取结果的select--subquery:在select或者where列表中包含子查询  
